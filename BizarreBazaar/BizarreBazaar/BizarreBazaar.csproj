@@ -43,10 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemFactory.cs" />
+    <Compile Include="Market Roles\Customer.cs" />
+    <Compile Include="Market Roles\Item.cs" />
+    <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Market Roles\Shop.cs" />
     <Compile Include="StringGenerator.cs" />
+    <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
