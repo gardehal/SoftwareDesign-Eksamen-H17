@@ -16,31 +16,30 @@ namespace BizarreBazaar {
 
         private ThreadManager() { }
 
-        private static void Stock(Shop shop, Stack stack)
+        private static void Stock(Shop shop)
         {
             while (shop.itemCount < 20) {
                 Item item = (Item)Factory.Create(MarketRole.ITEM);
                 Console.WriteLine("{0} is being pushed into {1} stack.", item.itemName, shop.shopName);
-                stack.Push(item);
+                shop.stack.Push(item);
                 shop.itemCount++;
                 System.Threading.Thread.Sleep(200);
             }
         }
 
-        private static void Buy(Customer cust, Stack stack)
+        private static void Buy(Customer cust, Shop shop)
         {
             int count = 0;
-            foreach (Shop shop in shopList) {
-                lock (cust) {
-                    while (count < 20) {
-                        if (stack.Count != 0) {
-                            Item item = (Item)stack.Peek();
-                            Console.WriteLine("Customer {0} is removing {1} from the {2} stack.", cust.customerName, item.itemName, shop.shopName);
-                            stack.Pop();
-                            count++;
-                        }
-                        System.Threading.Thread.Sleep(200);
+
+            lock (shop) {
+                while (count < 20) {
+                    if (shop.stack.Count != 0) {
+                        Item item = shop.stack.Peek();
+                        Console.WriteLine("Customer {0} is removing {1} from the {2} stack.", cust.customerName, item.itemName, shop.shopName);
+                        shop.stack.Pop();
+                        count++;
                     }
+                    System.Threading.Thread.Sleep(200);
                 }
             }
         }
@@ -49,9 +48,6 @@ namespace BizarreBazaar {
         {
             shopList = new List<Shop>();
             custList = new List<Customer>();
-
-            Stack stack = new Stack();
-            Stack stack2 = new Stack();
 
             while (shopList.Count() < maxShops) {
                 shopList.Add((Shop)Factory.Create(MarketRole.SHOP));
@@ -62,14 +58,15 @@ namespace BizarreBazaar {
             }
 
             foreach (Shop shop in shopList) {
-                Thread th = new Thread(() => Stock(shop, stack));
+                Thread th = new Thread(() => Stock(shop));
                 th.Start();
+                foreach (Customer cust in custList) {
+                    th = new Thread(() => Buy(cust, shop));
+                    th.Start();
+                }
             }
 
-            foreach (Customer cust in custList) {
-                Thread th = new Thread(() => Buy(cust, stack));
-                th.Start();
-            }
+            
         }
     }
 }

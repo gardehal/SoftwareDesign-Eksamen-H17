@@ -10,6 +10,7 @@ namespace BizarreBazaar {
         public int itemCount { get; set; }
         public List<Item> inventoryList;
         public Item[] inventory;
+        public Stack<Item> stack;
         public int inventorySize { get { return inventoryList.Count(); } }
 
         private Shop()
@@ -18,6 +19,7 @@ namespace BizarreBazaar {
             this.itemCount = 0;
             inventoryList = new List<Item>();
             inventory = new Item[20];
+            stack = new Stack<Item>();
         }
 
         public Shop(string shopName)
@@ -25,6 +27,7 @@ namespace BizarreBazaar {
             this.shopName = shopName;
             inventoryList = new List<Item>();
             inventory = new Item[20];
+            stack = new Stack<Item>();
         }
 
         public void AddItem(Item item)
