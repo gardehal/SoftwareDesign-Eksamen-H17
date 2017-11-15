@@ -11,7 +11,7 @@ namespace BizarreBazaar {
     class Factory {
         private Factory() { }
 
-        public static object Create(MarketRole role)
+        public static object Create (MarketRole role)
         {
             if (role == MarketRole.ITEM) {
                 Item item = null;

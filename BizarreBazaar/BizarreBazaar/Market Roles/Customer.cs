@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BizarreBazaar {
     class Customer {
-        private string customerName;
+        public string customerName { get; set; }
+        public int itemCount { get; set; }
 
         private Customer()
         {
@@ -14,16 +15,6 @@ namespace BizarreBazaar {
         }
 
         public Customer(string customerName)
-        {
-            this.customerName = customerName;
-        }
-
-        public string GetName()
-        {
-            return customerName;
-        }
-
-        public void SetName(string customerName)
         {
             this.customerName = customerName;
         }

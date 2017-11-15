@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,52 +8,68 @@ using System.Threading;
 
 namespace BizarreBazaar {
     class ThreadManager {
-        public static List<Shop> shopList;
-        public static List<Customer> customerList;
+        static public List<Shop> shopList;
+        static private int maxShops = 2;
 
-        public static int maxShops = 2;
-        public static int maxCustomers = 3;
+        static public List<Customer> custList;
+        static private int maxCustomers = 2;
 
         private ThreadManager() { }
 
-        public static void StockWare(Shop shop, Item item)
+        private static void Stock(Shop shop, Stack stack)
         {
-            shop.AddItem(item);
-            Console.WriteLine("{0} added item #{1}", shop.GetName(), shop.GetInventorySize());
+            while (shop.itemCount < 20) {
+                Item item = (Item)Factory.Create(MarketRole.ITEM);
+                Console.WriteLine("{0} is being pushed into {1} stack.", item.itemName, shop.shopName);
+                stack.Push(item);
+                shop.itemCount++;
+                System.Threading.Thread.Sleep(200);
+            }
         }
 
-        public static void BuyWare(Customer customer, Shop shop, Item item)
+        private static void Buy(Customer cust, Stack stack)
         {
-            if (shop.GetInventorySize() != 0) {
-                Console.WriteLine("Item #{0} from {1} was bought by {2}", shop.inventoryList.IndexOf(item) + 1, shop.GetName(), customer.GetName());
-                shop.RemoveItem(item);
+            int count = 0;
+            foreach (Shop shop in shopList) {
+                lock (cust) {
+                    while (count < 20) {
+                        if (stack.Count != 0) {
+                            Item item = (Item)stack.Peek();
+                            Console.WriteLine("Customer {0} is removing {1} from the {2} stack.", cust.customerName, item.itemName, shop.shopName);
+                            stack.Pop();
+                            count++;
+                        }
+                        System.Threading.Thread.Sleep(200);
+                    }
+                }
             }
         }
 
         public static void InitializeThreads()
         {
             shopList = new List<Shop>();
+            custList = new List<Customer>();
+
+            Stack stack = new Stack();
+            Stack stack2 = new Stack();
+
             while (shopList.Count() < maxShops) {
-                Shop shop = (Shop)Factory.Create(MarketRole.SHOP);
-                shopList.Add(shop);
+                shopList.Add((Shop)Factory.Create(MarketRole.SHOP));
             }
 
-            customerList = new List<Customer>();
-            while (customerList.Count() < maxCustomers) {
-                Customer customer = (Customer)Factory.Create(MarketRole.CUSTOMER);
-                customerList.Add(customer);
+            while (custList.Count() < maxCustomers) {
+                custList.Add((Customer)Factory.Create(MarketRole.CUSTOMER));
             }
 
             foreach (Shop shop in shopList) {
-                Item item = (Item)Factory.Create(MarketRole.ITEM);
-                Thread th = new Thread(() => StockWare(shop, item));
+                Thread th = new Thread(() => Stock(shop, stack));
                 th.Start();
             }
 
-            /*foreach (Customer cust in customerList) {
-                Thread th = new Thread(() => BuyWare());
+            foreach (Customer cust in custList) {
+                Thread th = new Thread(() => Buy(cust, stack));
                 th.Start();
-            }*/
+            }
         }
     }
 }

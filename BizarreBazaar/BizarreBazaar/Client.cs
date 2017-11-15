@@ -9,19 +9,7 @@ namespace BizarreBazaar {
     class Client {
         static void Main()
         {
-            int maxItems = 20;
-            int count = 0;
-
-            while (count < maxItems) {
-                ThreadManager.InitializeThreads();
-
-                //shop.PrintInventory();
-
-                //ThreadManager.BuyWare(shop, item);
-
-                //shop.PrintInventory();
-                count++;
-            }
+            ThreadManager.InitializeThreads();
 
             Console.ReadKey();
         }

@@ -6,29 +6,25 @@ using System.Threading.Tasks;
 
 namespace BizarreBazaar {
     public class Shop {
-        private string shopName;
+        public string shopName { get; set; }
+        public int itemCount { get; set; }
         public List<Item> inventoryList;
+        public Item[] inventory;
+        public int inventorySize { get { return inventoryList.Count(); } }
 
         private Shop()
         {
             this.shopName = "";
+            this.itemCount = 0;
             inventoryList = new List<Item>();
+            inventory = new Item[20];
         }
 
         public Shop(string shopName)
         {
             this.shopName = shopName;
             inventoryList = new List<Item>();
-        }
-
-        public string GetName()
-        {
-            return shopName;
-        }
-
-        public void SetName(string shopName)
-        {
-            this.shopName = shopName;
+            inventory = new Item[20];
         }
 
         public void AddItem(Item item)
@@ -36,21 +32,26 @@ namespace BizarreBazaar {
             inventoryList.Add(item);
         }
 
-        public void RemoveItem(Item item)
+        public bool RemoveItem(Item item)
         {
-            inventoryList.Remove(item);
+            if (inventoryList.Contains(item) != false) {
+                inventoryList.Remove(item);
+                return true;
+            }
+
+            return false;
         }
 
-        public int GetInventorySize()
+        public void RemoveItemAtIndex(int item)
         {
-            return inventoryList.Count;
+            inventoryList.RemoveAt(item);
         }
 
         public void PrintInventory()
         {
-            Console.WriteLine("Current stock is {0}", GetInventorySize());
+            Console.WriteLine("Current stock is {0}", inventorySize);
             foreach (Item i in inventoryList) {
-                Console.WriteLine("item #{0}: {1}", inventoryList.IndexOf(i) + 1, i.GetName());
+                Console.WriteLine("item #{0}: {1}", inventoryList.IndexOf(i) + 1, i.itemName);
             }
         }
     }

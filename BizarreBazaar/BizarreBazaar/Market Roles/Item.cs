@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BizarreBazaar {
     public class Item {
-        private string itemName;
+        public string itemName { get; set; }
 
         private Item()
         {
@@ -14,16 +14,6 @@ namespace BizarreBazaar {
         }
 
         public Item(string itemName)
-        {
-            this.itemName = itemName;
-        }
-
-        public string GetName()
-        {
-            return itemName;
-        }
-
-        public void SetName(string itemName)
         {
             this.itemName = itemName;
         }
