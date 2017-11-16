@@ -1,49 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace BizarreBazaar {
     class ThreadManager {
-        static public List<Shop> shopList;
-        static private int maxShops = 2;
+        // Shop variabler og antall shops
+        static private List<Shop> shopList;
+        static private int maxShops = 4;
 
-        static public List<Customer> custList;
-        static private int maxCustomers = 2;
+        // Customer variabler og antall kunder
+        static private List<Customer> custList;
+        static private int maxCustomers = 8;
+
+        // Maks antall varer som skal bli solgt
+        static private int maxItems = 20;
+
+        // Objekt brukt til å locke tråder
+        static private Object _lock = new Object();
 
         private ThreadManager() { }
 
-        private static void Stock(Shop shop)
+        // Legge til ny vare
+        private static void Stock (Shop shop)
         {
-            while (shop.itemCount < 20) {
-                Item item = (Item)Factory.Create(MarketRole.ITEM);
-                Console.WriteLine("{0} is being pushed into {1} stack.", item.itemName, shop.shopName);
-                shop.stack.Push(item);
-                shop.itemCount++;
-                System.Threading.Thread.Sleep(200);
-            }
-        }
-
-        private static void Buy(Customer cust, Shop shop)
-        {
-            int count = 0;
-
-            lock (shop) {
-                while (count < 20) {
-                    if (shop.stack.Count != 0) {
-                        Item item = shop.stack.Peek();
-                        Console.WriteLine("Customer {0} is removing {1} from the {2} stack.", cust.customerName, item.itemName, shop.shopName);
-                        shop.stack.Pop();
-                        count++;
-                    }
-                    System.Threading.Thread.Sleep(200);
+            while (shop.itemsStocked < maxItems) {
+                lock (_lock) {
+                    Item item = (Item)Factory.Create(MarketRole.ITEM);
+                    Console.WriteLine("Item #{0}: {1} is added to {2}'s inventory.", shop.itemsStocked + 1, item.itemName, shop.shopName);
+                    shop.AddItem(item);
+                    System.Threading.Thread.Sleep(300);
                 }
             }
         }
 
+        // Kunde kjøper vare
+        private static void Buy (Customer cust, Shop shop)
+        {
+            while (shop.itemsSold < maxItems) {
+                lock (_lock) {
+                    if (shop.inventorySize != 0) {
+                        Item item = shop.CheckRecentItem();
+                        Console.WriteLine("                                                      " +
+                            "{0} bought {1} from {2}'s inventory.", cust.customerName, item.itemName, shop.shopName);
+                        shop.RemoveItem();
+                    }
+                }
+            }
+        }
+
+        // Initialiserer listene og trådene
         public static void InitializeThreads()
         {
             shopList = new List<Shop>();
@@ -57,16 +63,17 @@ namespace BizarreBazaar {
                 custList.Add((Customer)Factory.Create(MarketRole.CUSTOMER));
             }
 
-            foreach (Shop shop in shopList) {
-                Thread th = new Thread(() => Stock(shop));
-                th.Start();
-                foreach (Customer cust in custList) {
-                    th = new Thread(() => Buy(cust, shop));
+            foreach (Customer cust in custList) {
+                for (int i = 0; i < maxShops - 1; i++) {
+                    Thread th = new Thread(() => Buy(cust, shopList[i]));
                     th.Start();
                 }
             }
 
-            
+            foreach (Shop shop in shopList) {
+                Thread th = new Thread(() => Stock(shop));
+                th.Start();
+            }
         }
     }
 }

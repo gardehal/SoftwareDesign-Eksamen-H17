@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BizarreBazaar {
+﻿namespace BizarreBazaar {
     // enum for å sjekke hvilke type item det er
     enum MarketRole { ITEM, SHOP, CUSTOMER }
 
     class Factory {
         private Factory() { }
 
+        // HUSK: Må caste Create() til riktig objekt-type, f.eks hvis du vil ha item: (Item)Factory.Create(MarketRole.ITEM);
         public static object Create (MarketRole role)
         {
+            // Factory for vare
             if (role == MarketRole.ITEM) {
                 Item item = null;
                 string name;
@@ -24,6 +20,7 @@ namespace BizarreBazaar {
                 item = new Item(name);
 
                 return item;
+            // Factory for shop
             } else if (role == MarketRole.SHOP) {
                 Shop shop = null;
                 string name;
@@ -35,6 +32,7 @@ namespace BizarreBazaar {
                 shop = new Shop(name);
 
                 return shop;
+            // Factory for kunde
             } else if (role == MarketRole.CUSTOMER) {
                 Customer customer = null;
                 string name;

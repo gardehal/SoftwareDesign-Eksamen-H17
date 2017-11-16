@@ -1,61 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BizarreBazaar {
     public class Shop {
         public string shopName { get; set; }
-        public int itemCount { get; set; }
-        public List<Item> inventoryList;
-        public Item[] inventory;
-        public Stack<Item> stack;
-        public int inventorySize { get { return inventoryList.Count(); } }
+        public int itemsStocked { get; set; }
+        public int itemsSold { get; set; }
+        private Stack<Item> inventoryStack;
+
+        public int inventorySize { get { return inventoryStack.Count; } }
 
         private Shop()
         {
             this.shopName = "";
-            this.itemCount = 0;
-            inventoryList = new List<Item>();
-            inventory = new Item[20];
-            stack = new Stack<Item>();
+            this.itemsStocked = 0;
+            this.itemsSold = 0;
+            inventoryStack = new Stack<Item>();
         }
 
         public Shop(string shopName)
         {
             this.shopName = shopName;
-            inventoryList = new List<Item>();
-            inventory = new Item[20];
-            stack = new Stack<Item>();
+            this.itemsStocked = 0;
+            this.itemsSold = 0;
+            inventoryStack = new Stack<Item>();
         }
 
         public void AddItem(Item item)
         {
-            inventoryList.Add(item);
+            inventoryStack.Push(item);
+            itemsStocked++;
         }
 
-        public bool RemoveItem(Item item)
+        public void RemoveItem()
         {
-            if (inventoryList.Contains(item) != false) {
-                inventoryList.Remove(item);
-                return true;
+            if (inventorySize != 0) {
+                inventoryStack.Pop();
+                itemsSold++;
             }
-
-            return false;
         }
 
-        public void RemoveItemAtIndex(int item)
+        public Item CheckRecentItem()
         {
-            inventoryList.RemoveAt(item);
-        }
-
-        public void PrintInventory()
-        {
-            Console.WriteLine("Current stock is {0}", inventorySize);
-            foreach (Item i in inventoryList) {
-                Console.WriteLine("item #{0}: {1}", inventoryList.IndexOf(i) + 1, i.itemName);
-            }
+            return inventoryStack.Pop();
         }
     }
 }

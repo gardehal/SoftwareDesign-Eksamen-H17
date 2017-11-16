@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizarreBazaar {
     enum ItemType { FOOD, DRINK, TOY, CLOTHING, FURNITURE }
@@ -18,6 +15,7 @@ namespace BizarreBazaar {
         {
             List<string> stringList = new List<string>();
 
+            // Navn til varer
             if (role == MarketRole.ITEM) {
                 Array value = Enum.GetValues(typeof(ItemType));
                 ItemType type = (ItemType)value.GetValue(ranNum.Next(value.Length));
@@ -55,11 +53,18 @@ namespace BizarreBazaar {
                         stringList.Add("action figure");
                         break;
                 }
+            // Navn til shops
             } else if (role == MarketRole.SHOP) {
-                stringList.Add("Super cool shop");
-                stringList.Add("Super duper emporium shop");
-                stringList.Add("Starbucks");
-                stringList.Add("Amazing fantastical shop");
+                stringList.Add("Cool shop");
+                stringList.Add("Super duper emporium");
+                stringList.Add("Starbuck");
+                stringList.Add("Ebay shop");
+                stringList.Add("Amazon shop");
+                stringList.Add("Burger King shop");
+                stringList.Add("Westerdals shop");
+                stringList.Add("Kiwi");
+                stringList.Add("Ikea");
+            // Navn til customers
             } else if (role == MarketRole.CUSTOMER) {
                 stringList.Add("Per");
                 stringList.Add("Bob");
@@ -67,6 +72,13 @@ namespace BizarreBazaar {
                 stringList.Add("Alex");
                 stringList.Add("Alexander");
                 stringList.Add("Margrethe");
+                stringList.Add("Vincent");
+                stringList.Add("Leo");
+                stringList.Add("Jay");
+                stringList.Add("George");
+                stringList.Add("Andrea");
+                stringList.Add("Haakon");
+                stringList.Add("Bjarne");
             }
 
             // Setter index til random for å få et random indeks av stringList
