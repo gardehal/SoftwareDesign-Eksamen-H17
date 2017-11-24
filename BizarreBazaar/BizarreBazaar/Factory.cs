@@ -1,8 +1,8 @@
 ﻿namespace BizarreBazaar {
     // enum for å sjekke hvilke type item det er
-    enum MarketRole { ITEM, SHOP, CUSTOMER }
+    public enum MarketRole { ITEM, SHOP, CUSTOMER }
 
-    class Factory {
+    public class Factory {
         private Factory() { }
 
         // HUSK: Må caste Create() til riktig objekt-type, f.eks hvis du vil ha item: (Item)Factory.Create(MarketRole.ITEM);

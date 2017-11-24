@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace BizarreBazaar {
     enum ItemType { FOOD, DRINK, TOY, CLOTHING, FURNITURE }
 
-    class StringGenerator {
+    // StringGenerator blir brukt til å generere tilfeldige navn for de forskjellige klassene
+    public class StringGenerator {
 
-        static private Random ranNum = new Random();
+        private static Random ranNum = new Random();
 
         private StringGenerator() { }
 

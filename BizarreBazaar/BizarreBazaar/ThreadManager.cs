@@ -4,25 +4,29 @@ using System.Linq;
 using System.Threading;
 
 namespace BizarreBazaar {
-    class ThreadManager {
+    public class ThreadManager {
         // Shop variabler og antall shops
-        static private List<Shop> shopList;
-        static private int maxShops = 4;
+        private List<Shop> shopList;
+        private int maxShops;
 
         // Customer variabler og antall kunder
-        static private List<Customer> custList;
-        static private int maxCustomers = 8;
+        private List<Customer> custList;
+        private int maxCustomers;
 
         // Maks antall varer som skal bli solgt
-        static private int maxItems = 20;
+        private int maxItems;
 
         // Objekt brukt til å locke tråder
-        static private Object _lock = new Object();
+        private Object _lock = new Object();
 
-        private ThreadManager() { }
+        public ThreadManager(int maxShops, int maxCustomers, int maxItems) {
+            this.maxShops = maxShops;
+            this.maxCustomers = maxCustomers;
+            this.maxItems = maxItems;
+        }
 
-        // Legge til ny vare
-        private static void Stock (Shop shop)
+        // Funksjon til å legge til ny vare
+        private void Stock (Shop shop)
         {
             while (shop.itemsStocked < maxItems) {
                 lock (_lock) {
@@ -35,12 +39,12 @@ namespace BizarreBazaar {
         }
 
         // Kunde kjøper vare
-        private static void Buy (Customer cust, Shop shop)
+        private void Buy (Customer cust, Shop shop)
         {
             while (shop.itemsSold < maxItems) {
                 lock (_lock) {
                     if (shop.inventorySize != 0) {
-                        Item item = shop.CheckRecentItem();
+                        Item item = shop.CheckRecentlyAddedItem();
                         Console.WriteLine("                                                      " +
                             "{0} bought {1} from {2}'s inventory.", cust.customerName, item.itemName, shop.shopName);
                         shop.RemoveItem();
@@ -50,7 +54,7 @@ namespace BizarreBazaar {
         }
 
         // Initialiserer listene og trådene
-        public static void InitializeThreads()
+        public void Initialize()
         {
             shopList = new List<Shop>();
             custList = new List<Customer>();

@@ -48,9 +48,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Market Roles Test\ItemTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Market Roles Test\CustomerTest.cs" />
+    <Compile Include="TestUnit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

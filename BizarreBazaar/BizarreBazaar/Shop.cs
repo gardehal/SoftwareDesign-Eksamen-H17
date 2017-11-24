@@ -39,9 +39,9 @@ namespace BizarreBazaar {
             }
         }
 
-        public Item CheckRecentItem()
+        public Item CheckRecentlyAddedItem()
         {
-            return inventoryStack.Pop();
+            return inventoryStack.Peek();
         }
     }
 }
